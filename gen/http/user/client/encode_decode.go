@@ -52,6 +52,9 @@ func EncodeAddRequest(encoder func(*http.Request) goahttp.Encoder) func(*http.Re
 // DecodeAddResponse returns a decoder for responses returned by the user add
 // endpoint. restoreBody controls whether the response body should be restored
 // after having been read.
+// DecodeAddResponse may return the following errors:
+//	- "db_error" (type *goa.ServiceError): http.StatusInternalServerError
+//	- error: internal error
 func DecodeAddResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
@@ -82,6 +85,20 @@ func DecodeAddResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody
 			}
 			res := NewAddUserCreated(&body)
 			return res, nil
+		case http.StatusInternalServerError:
+			var (
+				body AddDbErrorResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("user", "add", err)
+			}
+			err = ValidateAddDbErrorResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("user", "add", err)
+			}
+			return nil, NewAddDbError(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("user", "add", resp.StatusCode, string(body))
@@ -107,6 +124,9 @@ func (c *Client) BuildListRequest(ctx context.Context, v interface{}) (*http.Req
 // DecodeListResponse returns a decoder for responses returned by the user list
 // endpoint. restoreBody controls whether the response body should be restored
 // after having been read.
+// DecodeListResponse may return the following errors:
+//	- "db_error" (type *goa.ServiceError): http.StatusInternalServerError
+//	- error: internal error
 func DecodeListResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody bool) func(*http.Response) (interface{}, error) {
 	return func(resp *http.Response) (interface{}, error) {
 		if restoreBody {
@@ -143,6 +163,20 @@ func DecodeListResponse(decoder func(*http.Response) goahttp.Decoder, restoreBod
 			}
 			res := NewListStoredUserOK(body)
 			return res, nil
+		case http.StatusInternalServerError:
+			var (
+				body ListDbErrorResponseBody
+				err  error
+			)
+			err = decoder(resp).Decode(&body)
+			if err != nil {
+				return nil, goahttp.ErrDecodingError("user", "list", err)
+			}
+			err = ValidateListDbErrorResponseBody(&body)
+			if err != nil {
+				return nil, goahttp.ErrValidationError("user", "list", err)
+			}
+			return nil, NewListDbError(&body)
 		default:
 			body, _ := ioutil.ReadAll(resp.Body)
 			return nil, goahttp.ErrInvalidResponse("user", "list", resp.StatusCode, string(body))

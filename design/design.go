@@ -21,6 +21,7 @@ var _ = Service("user", func() {
 		cors.MaxAge(100)
 		cors.Credentials()
 	})
+	Error("db_error", ErrorResult, "Unable to process db request")
 	//Method to post new user
 	Method("add", func() {
 		Description("Add new user and return its ID.")
@@ -29,6 +30,7 @@ var _ = Service("user", func() {
 		HTTP(func() {
 			POST("/")
 			Response(StatusCreated)
+			Response("db_error", StatusInternalServerError)
 		})
 	})
 	//Method to get all existing users
@@ -38,6 +40,7 @@ var _ = Service("user", func() {
 		HTTP(func() {
 			GET("/")
 			Response(StatusOK)
+			Response("db_error", StatusInternalServerError)
 		})
 	})
 	Files("/openapi.json", "./gen/http/openapi.json")

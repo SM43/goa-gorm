@@ -2,6 +2,7 @@ package userapi
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/jinzhu/gorm"
@@ -31,7 +32,11 @@ func (s *usersrvc) Add(ctx context.Context, p *user.User) (res *user.User, err e
 	userStore = append(userStore, &item)
 
 	res = (&user.User{ID: p.ID, Name: p.Name})
-	s.db.Create(&User{Name: *p.Name})
+	err = s.db.Create(&User{Name: *p.Name}).Error
+
+	if err != nil {
+		return nil, user.MakeDbError(fmt.Errorf(err.Error()))
+	}
 
 	s.logger.Print("Array Size - ", len(userStore))
 	return
@@ -42,7 +47,10 @@ func (s *usersrvc) List(ctx context.Context) (res []*user.StoredUser, err error)
 	s.logger.Print("user.list")
 
 	var all []User
-	s.db.Find(&all)
+	err = s.db.Find(&all).Error
+	if err != nil {
+		return nil, user.MakeDbError(fmt.Errorf(err.Error()))
+	}
 
 	ret := make([]*user.StoredUser, len(all))
 	for i, r := range all {

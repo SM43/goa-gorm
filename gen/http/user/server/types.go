@@ -36,6 +36,42 @@ type AddResponseBody struct {
 // response body.
 type ListResponseBody []*StoredUserResponse
 
+// AddDbErrorResponseBody is the type of the "user" service "add" endpoint HTTP
+// response body for the "db_error" error.
+type AddDbErrorResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
+// ListDbErrorResponseBody is the type of the "user" service "list" endpoint
+// HTTP response body for the "db_error" error.
+type ListDbErrorResponseBody struct {
+	// Name is the name of this class of errors.
+	Name string `form:"name" json:"name" xml:"name"`
+	// ID is a unique identifier for this particular occurrence of the problem.
+	ID string `form:"id" json:"id" xml:"id"`
+	// Message is a human-readable explanation specific to this occurrence of the
+	// problem.
+	Message string `form:"message" json:"message" xml:"message"`
+	// Is the error temporary?
+	Temporary bool `form:"temporary" json:"temporary" xml:"temporary"`
+	// Is the error a timeout?
+	Timeout bool `form:"timeout" json:"timeout" xml:"timeout"`
+	// Is the error a server-side fault?
+	Fault bool `form:"fault" json:"fault" xml:"fault"`
+}
+
 // StoredUserResponse is used to define fields on response body types.
 type StoredUserResponse struct {
 	// ID is the unique id of the blog.
@@ -60,6 +96,34 @@ func NewListResponseBody(res []*user.StoredUser) ListResponseBody {
 	body := make([]*StoredUserResponse, len(res))
 	for i, val := range res {
 		body[i] = marshalUserStoredUserToStoredUserResponse(val)
+	}
+	return body
+}
+
+// NewAddDbErrorResponseBody builds the HTTP response body from the result of
+// the "add" endpoint of the "user" service.
+func NewAddDbErrorResponseBody(res *goa.ServiceError) *AddDbErrorResponseBody {
+	body := &AddDbErrorResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
+	}
+	return body
+}
+
+// NewListDbErrorResponseBody builds the HTTP response body from the result of
+// the "list" endpoint of the "user" service.
+func NewListDbErrorResponseBody(res *goa.ServiceError) *ListDbErrorResponseBody {
+	body := &ListDbErrorResponseBody{
+		Name:      res.Name,
+		ID:        res.ID,
+		Message:   res.Message,
+		Temporary: res.Temporary,
+		Timeout:   res.Timeout,
+		Fault:     res.Fault,
 	}
 	return body
 }

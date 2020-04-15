@@ -9,6 +9,8 @@ package user
 
 import (
 	"context"
+
+	goa "goa.design/goa/v3/pkg"
 )
 
 // The user service gives user details.
@@ -43,4 +45,13 @@ type StoredUser struct {
 	ID uint64
 	// Name of person
 	Name string
+}
+
+// MakeDbError builds a goa.ServiceError from an error.
+func MakeDbError(err error) *goa.ServiceError {
+	return &goa.ServiceError{
+		Name:    "db_error",
+		ID:      goa.NewErrorID(),
+		Message: err.Error(),
+	}
 }

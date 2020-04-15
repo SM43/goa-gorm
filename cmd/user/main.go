@@ -52,7 +52,7 @@ func main() {
 		fmt.Println("Successful Db Connection")
 		defer db.Close()
 
-		db.AutoMigrate(userapi.User{})
+		//db.AutoMigrate(userapi.User{})
 	}
 	// Initialize the services.
 	var (
