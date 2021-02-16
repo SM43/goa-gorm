@@ -28,13 +28,13 @@ func NewClient(add, list goa.Endpoint) *Client {
 }
 
 // Add calls the "add" endpoint of the "user" service.
-func (c *Client) Add(ctx context.Context, p *User) (res *User, err error) {
+func (c *Client) Add(ctx context.Context, p *User) (res string, err error) {
 	var ires interface{}
 	ires, err = c.AddEndpoint(ctx, p)
 	if err != nil {
 		return
 	}
-	return ires.(*User), nil
+	return ires.(string), nil
 }
 
 // List calls the "list" endpoint of the "user" service.

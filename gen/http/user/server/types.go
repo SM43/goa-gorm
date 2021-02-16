@@ -23,15 +23,6 @@ type AddRequestBody struct {
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 }
 
-// AddResponseBody is the type of the "user" service "add" endpoint HTTP
-// response body.
-type AddResponseBody struct {
-	// ID of a user
-	ID *uint64 `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	// Name of person
-	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-}
-
 // ListResponseBody is the type of the "user" service "list" endpoint HTTP
 // response body.
 type ListResponseBody []*StoredUserResponse
@@ -78,16 +69,6 @@ type StoredUserResponse struct {
 	ID uint64 `form:"id" json:"id" xml:"id"`
 	// Name of person
 	Name string `form:"name" json:"name" xml:"name"`
-}
-
-// NewAddResponseBody builds the HTTP response body from the result of the
-// "add" endpoint of the "user" service.
-func NewAddResponseBody(res *user.User) *AddResponseBody {
-	body := &AddResponseBody{
-		ID:   res.ID,
-		Name: res.Name,
-	}
-	return body
 }
 
 // NewListResponseBody builds the HTTP response body from the result of the

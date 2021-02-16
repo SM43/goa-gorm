@@ -23,15 +23,6 @@ type AddRequestBody struct {
 	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
 }
 
-// AddResponseBody is the type of the "user" service "add" endpoint HTTP
-// response body.
-type AddResponseBody struct {
-	// ID of a user
-	ID *uint64 `form:"id,omitempty" json:"id,omitempty" xml:"id,omitempty"`
-	// Name of person
-	Name *string `form:"name,omitempty" json:"name,omitempty" xml:"name,omitempty"`
-}
-
 // ListResponseBody is the type of the "user" service "list" endpoint HTTP
 // response body.
 type ListResponseBody []*StoredUserResponse
@@ -90,17 +81,6 @@ func NewAddRequestBody(p *user.User) *AddRequestBody {
 	return body
 }
 
-// NewAddUserCreated builds a "user" service "add" endpoint result from a HTTP
-// "Created" response.
-func NewAddUserCreated(body *AddResponseBody) *user.User {
-	v := &user.User{
-		ID:   body.ID,
-		Name: body.Name,
-	}
-
-	return v
-}
-
 // NewAddDbError builds a user service add endpoint db_error error.
 func NewAddDbError(body *AddDbErrorResponseBody) *goa.ServiceError {
 	v := &goa.ServiceError{
@@ -137,16 +117,6 @@ func NewListDbError(body *ListDbErrorResponseBody) *goa.ServiceError {
 	}
 
 	return v
-}
-
-// ValidateAddResponseBody runs the validations defined on AddResponseBody
-func ValidateAddResponseBody(body *AddResponseBody) (err error) {
-	if body.Name != nil {
-		if utf8.RuneCountInString(*body.Name) > 100 {
-			err = goa.MergeErrors(err, goa.InvalidLengthError("body.name", *body.Name, utf8.RuneCountInString(*body.Name), 100, false))
-		}
-	}
-	return
 }
 
 // ValidateAddDbErrorResponseBody runs the validations defined on

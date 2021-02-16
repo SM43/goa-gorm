@@ -26,7 +26,7 @@ var _ = Service("user", func() {
 	Method("add", func() {
 		Description("Add new user and return its ID.")
 		Payload(User)
-		Result(User)
+		Result(String)
 		HTTP(func() {
 			POST("/")
 			Response(StatusCreated)

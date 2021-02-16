@@ -9,7 +9,7 @@ import (
 	user "github.com/sm43/goa-gorm/gen/user"
 )
 
-var userStore = make([]*user.StoredUser, 0)
+// var userStore = make([]*user.StoredUser, 0)
 
 // user service example implementation.
 // The example methods log the requests and return zero values.
@@ -24,22 +24,19 @@ func NewUser(db *gorm.DB, logger *log.Logger) user.Service {
 }
 
 // Add new user and return its ID.
-func (s *usersrvc) Add(ctx context.Context, p *user.User) (res *user.User, err error) {
-	res = &user.User{}
+func (s *usersrvc) Add(ctx context.Context, p *user.User) (res string, err error) {
 	s.logger.Print("user.add")
 
-	item := user.StoredUser{ID: *p.ID, Name: *p.Name}
-	userStore = append(userStore, &item)
+	// item := user.StoredUser{ID: *p.ID, Name: *p.Name}
+	// userStore = append(userStore, &item)
 
-	res = (&user.User{ID: p.ID, Name: p.Name})
-	err = s.db.Create(&User{Name: *p.Name}).Error
-
+	inp := &User{Name: *p.Name}
+	err = s.db.Create(inp).Error
 	if err != nil {
-		return nil, user.MakeDbError(fmt.Errorf(err.Error()))
+		return "", user.MakeDbError(fmt.Errorf(err.Error()))
 	}
 
-	s.logger.Print("Array Size - ", len(userStore))
-	return
+	return "added successfully", nil
 }
 
 // List all users

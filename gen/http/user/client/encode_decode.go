@@ -72,19 +72,14 @@ func DecodeAddResponse(decoder func(*http.Response) goahttp.Decoder, restoreBody
 		switch resp.StatusCode {
 		case http.StatusCreated:
 			var (
-				body AddResponseBody
+				body string
 				err  error
 			)
 			err = decoder(resp).Decode(&body)
 			if err != nil {
 				return nil, goahttp.ErrDecodingError("user", "add", err)
 			}
-			err = ValidateAddResponseBody(&body)
-			if err != nil {
-				return nil, goahttp.ErrValidationError("user", "add", err)
-			}
-			res := NewAddUserCreated(&body)
-			return res, nil
+			return body, nil
 		case http.StatusInternalServerError:
 			var (
 				body AddDbErrorResponseBody

@@ -49,7 +49,7 @@ paths:
         "201":
           description: Created response.
           schema:
-            $ref: '#/definitions/UserAddResponseBody'
+            type: string
         "500":
           description: Internal Server Error response.
           schema:
@@ -77,18 +77,18 @@ definitions:
       id:
         type: integer
         description: ID is the unique id of the blog.
-        example: 5515246943780495549
+        example: 4170733351200352238
         format: int64
       name:
         type: string
         description: Name of person
-        example: hes
+        example: 5gs
         maxLength: 100
     description: A StoredUser describes a user retrieved by the storage service. (default
       view)
     example:
-      id: 11281141276310197849
-      name: sub
+      id: 9087165944327049258
+      name: pgb
     required:
     - id
     - name
@@ -99,7 +99,7 @@ definitions:
       fault:
         type: boolean
         description: Is the error a server-side fault?
-        example: false
+        example: true
       id:
         type: string
         description: ID is a unique identifier for this particular occurrence of the
@@ -121,10 +121,10 @@ definitions:
       timeout:
         type: boolean
         description: Is the error a timeout?
-        example: true
+        example: false
     description: Unable to process db request (default view)
     example:
-      fault: true
+      fault: false
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
@@ -144,33 +144,16 @@ definitions:
       id:
         type: integer
         description: ID of a user
-        example: 9592574435837841775
+        example: 9836464076590694313
         format: int64
       name:
         type: string
         description: Name of person
-        example: 3d1
+        example: b6h
         maxLength: 100
     example:
-      id: 2118306210829482107
-      name: h07
-  UserAddResponseBody:
-    title: UserAddResponseBody
-    type: object
-    properties:
-      id:
-        type: integer
-        description: ID of a user
-        example: 13906744339640640010
-        format: int64
-      name:
-        type: string
-        description: Name of person
-        example: lhf
-        maxLength: 100
-    example:
-      id: 15797882809909419288
-      name: oy8
+      id: 2622097286141032656
+      name: 59h
   UserListDbErrorResponseBody:
     title: 'Mediatype identifier: application/vnd.goa.error; view=default'
     type: object
@@ -196,18 +179,18 @@ definitions:
       temporary:
         type: boolean
         description: Is the error temporary?
-        example: false
+        example: true
       timeout:
         type: boolean
         description: Is the error a timeout?
         example: true
     description: Unable to process db request (default view)
     example:
-      fault: false
+      fault: true
       id: 123abc
       message: parameter 'p' must be an integer
       name: bad_request
-      temporary: true
+      temporary: false
       timeout: true
     required:
     - name

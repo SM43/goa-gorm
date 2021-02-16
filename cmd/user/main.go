@@ -11,13 +11,23 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/joho/godotenv"
 	userapi "github.com/sm43/goa-gorm"
 	user "github.com/sm43/goa-gorm/gen/user"
+	"github.com/spf13/viper"
 
 	"github.com/jinzhu/gorm"
 	// Blank for package side effect: loads postgres drivers
 	_ "github.com/lib/pq"
 )
+
+type Database struct {
+	Host     string
+	Port     string
+	Name     string
+	User     string
+	Password string
+}
 
 func main() {
 	// Define command line flags, add any other flag required to configure the
@@ -41,25 +51,38 @@ func main() {
 
 	// Database Connection
 	var (
-		db     *gorm.DB
+		db *gorm.DB
 	)
 	{
-		var err error
-		db, err = gorm.Open("postgres", "user=postgres password=postgres dbname=goa sslmode=disable")
+		if err := godotenv.Load(".env.dev"); err != nil {
+			fmt.Fprintf(os.Stderr, "SKIP: loading env file %s failed: %s\n", "file", err)
+		}
+		viper.AutomaticEnv()
+
+		dbConfig, err := initDB()
+		if err != nil {
+			log.Fatal("failed to get db configurations", err)
+		}
+
+		conn := fmt.Sprintf(
+			"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			dbConfig.Host, dbConfig.Port, dbConfig.User, dbConfig.Password, dbConfig.Name)
+
+		db, err = gorm.Open("postgres", conn)
 		if err != nil {
 			log.Fatal(err)
 		}
 		fmt.Println("Successful Db Connection")
 		defer db.Close()
 
-		//db.AutoMigrate(userapi.User{})
+		db.AutoMigrate(userapi.User{})
 	}
 	// Initialize the services.
 	var (
 		userSvc user.Service
 	)
 	{
-		userSvc = userapi.NewUser(db,logger)
+		userSvc = userapi.NewUser(db, logger)
 	}
 
 	// Wrap the services in endpoints that can be invoked from other services
@@ -123,4 +146,25 @@ func main() {
 
 	wg.Wait()
 	logger.Println("exited")
+}
+
+func initDB() (*Database, error) {
+
+	db := &Database{}
+	if db.Host = viper.GetString("POSTGRES_HOST"); db.Host == "" {
+		return nil, fmt.Errorf("no POSTGRES_HOST environment variable defined")
+	}
+	if db.Port = viper.GetString("POSTGRES_PORT"); db.Port == "" {
+		return nil, fmt.Errorf("no POSTGRES_PORT environment variable defined")
+	}
+	if db.Name = viper.GetString("POSTGRES_DB"); db.Name == "" {
+		return nil, fmt.Errorf("no POSTGRES_DB environment variable defined")
+	}
+	if db.User = viper.GetString("POSTGRES_USER"); db.User == "" {
+		return nil, fmt.Errorf("no POSTGRES_USER environment variable defined")
+	}
+	if db.Password = viper.GetString("POSTGRES_PASSWORD"); db.Password == "" {
+		return nil, fmt.Errorf("no POSTGRES_PASSWORD environment variable defined")
+	}
+	return db, nil
 }

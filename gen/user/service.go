@@ -16,7 +16,7 @@ import (
 // The user service gives user details.
 type Service interface {
 	// Add new user and return its ID.
-	Add(context.Context, *User) (res *User, err error)
+	Add(context.Context, *User) (res string, err error)
 	// List all users
 	List(context.Context) (res []*StoredUser, err error)
 }

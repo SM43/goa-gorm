@@ -21,9 +21,9 @@ import (
 // endpoint.
 func EncodeAddResponse(encoder func(context.Context, http.ResponseWriter) goahttp.Encoder) func(context.Context, http.ResponseWriter, interface{}) error {
 	return func(ctx context.Context, w http.ResponseWriter, v interface{}) error {
-		res := v.(*user.User)
+		res := v.(string)
 		enc := encoder(ctx, w)
-		body := NewAddResponseBody(res)
+		body := res
 		w.WriteHeader(http.StatusCreated)
 		return enc.Encode(body)
 	}

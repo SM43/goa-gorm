@@ -30,8 +30,8 @@ func UsageCommands() string {
 // UsageExamples produces an example of a valid invocation of the CLI tool.
 func UsageExamples() string {
 	return os.Args[0] + ` user add --body '{
-      "id": 3239861253574710619,
-      "name": "fdd"
+      "id": 6623806583676096193,
+      "name": "pwv"
    }'` + "\n" +
 		""
 }
@@ -160,8 +160,8 @@ Add new user and return its ID.
 
 Example:
     `+os.Args[0]+` user add --body '{
-      "id": 3239861253574710619,
-      "name": "fdd"
+      "id": 6623806583676096193,
+      "name": "pwv"
    }'
 `, os.Args[0])
 }

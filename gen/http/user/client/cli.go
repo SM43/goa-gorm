@@ -21,7 +21,7 @@ func BuildAddPayload(userAddBody string) (*user.User, error) {
 	{
 		err = json.Unmarshal([]byte(userAddBody), &body)
 		if err != nil {
-			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"id\": 3239861253574710619,\n      \"name\": \"fdd\"\n   }'")
+			return nil, fmt.Errorf("invalid JSON for body, example of valid JSON:\n%s", "'{\n      \"id\": 6623806583676096193,\n      \"name\": \"pwv\"\n   }'")
 		}
 	}
 	v := &user.User{
